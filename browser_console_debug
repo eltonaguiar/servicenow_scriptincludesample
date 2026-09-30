@@ -1,0 +1,28 @@
+/************
+When debugging client script in browser switch from top to gsft_main (e.g. incident.do)
+Console → dropdown that says top → select gsft_main (or the *.do frame) → then run g_form.getValue(...).
+
+In the Console toolbar, the context dropdown starts on top. Change it from top to gsft_main.
+
+***********/
+
+
+console.log(`getDisplayValue is : ${g_form.getDisplayValue('caller_id')} 
+\n getValue is: ${g_form.getValue('caller_id')} 
+\n name: ${g_form.tableName}
+\n getDisplayValue is : ${g_form.getDisplayValue('priority')} 
+\n getValue is: ${g_form.getValue('priority')} 
+
+` 
+/***********
+sample output:
+getDisplayValue is : Adam Ringle 
+
+ getValue is: f19943d813a81300f2277f176144b031 
+
+ name: incident
+
+ getDisplayValue is : 4 - Low 
+
+ getValue is: 4 
+****************/
