@@ -26,3 +26,23 @@ getDisplayValue is : Adam Ringle
 
  getValue is: 4 
 ****************/
+
+/*
+g_form.getLabelOf('caller_id'); 
+This would return "Caller" , BUT  if you run with 
+g_form.getLabelOf('caller_id12345');  
+it will echo  and give caller_id12345 , ...
+
+*/
+function getFieldLabel(name) {
+  if (!g_form.hasField(name)) {
+    return null; // invalid — do not use getLabelOf
+  }
+  return g_form.getLabelOf(name);
+}
+
+
+/*
+
+
+*/
