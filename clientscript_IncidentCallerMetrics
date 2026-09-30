@@ -1,0 +1,53 @@
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+   if (isLoading || newValue === '') {
+      return;
+   }
+
+   var ga=new GlideAjax("IncidentAjaxUtils");
+   ga.addParam("sysparm_name","getCallerOpenStats");
+   ga.addParam("sysparm_user_id",newValue);
+   
+   var answer=ga.getXMLAnswer(function(answer){
+
+if (!answer)
+{
+	alert('answer is not provided');
+return;
+}
+
+var data=JSON.parse(answer);
+if (!data.ok)
+{
+	alert('data is not ok, error:'+data.error);
+	return;
+}
+else
+{
+	
+//	alert('should be showing a message');
+
+	try
+	{
+	g_form.clearMessages();
+	g_form.addInfoMessage('The caller ' +g_form.getDisplayValue('caller_id') +' has '+  data.count + ' active incidents.');
+
+	}
+	catch(err)
+	{
+		alert('error on the g_form message'+String(err));
+	}
+}
+
+
+
+   }  );
+
+
+
+
+
+
+
+   //Type appropriate comment here, and begin script below
+   
+}
