@@ -34,6 +34,9 @@ g_form.getLabelOf('caller_id12345');
 it will echo  and give caller_id12345 , ...
 
 */
+
+
+/* for g_form.hasField to return true, the field must be on the form. i.e. if you did it with sys_mod_count it would return false */
 function getFieldLabel(name) {
   if (!g_form.hasField(name)) {
     return null; // invalid — do not use getLabelOf
