@@ -1,0 +1,90 @@
+// THIS WONT WORK IN A CLIENT CALLABLE SCRIPT INCLUDE , since the page wouldnt be refreshed.
+/*
+		if (count>0)
+		gs.addInfoMessage('The caller '+ gruser.name + 'has ' +count );
+*/
+
+var IncidentAjaxUtils_GlideQuery = Class.create();
+IncidentAjaxUtils_GlideQuery.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+    ///DO NOT INITIALIZE IN A CLIENT CALLABLE SCRIPT INCLUDE !
+    /*
+    	initialize:function()
+    	{
+
+    	}	,
+    	*/
+
+    getCallerOpenStats: function() {
+
+        try {
+
+            //    var gruser = new GlideRecord("sys_user");
+
+            userid = this.getParameter('sysparm_user_id');
+
+
+            if (!GlideStringUtil.isEligibleSysID(userid)) {
+                return JSON.stringify({
+                    ok: false,
+                    error: 'invalid_user'
+                });
+            }
+
+            var gqryuser = new global.GlideQuery('sys_user')
+                .where('sys_id', userid)
+                .select();
+
+
+            //.query();  -> NO QUERY with GlideQuery, use instead .select or selectOne etc
+
+
+
+            //gruser.get(userid);
+
+            var count = new global.GlideQuery('incident')
+                .where('caller_id', userid)
+                .where('active', true)
+                .count();
+            //.aggregate("COUNT")
+            //.select();  // GO SINGLE RECORD DO NOT USE aggregate and select, use count()
+
+            //.addAggregate('COUNT') //with GlideQuery instread its .aggregate("COUNT")
+            //var grincidents = new GlideAggregate('incident');
+            //grincidents.addAggregate("COUNT");
+            //grincidents.addQuery("caller_id", userid);
+            //grincidents.addQuery("active", true);
+
+            //grincidents.query();
+            //var count = grincidents.next() ? grincidents.getAggregate("COUNT") : 0;
+
+            //next() is not valid for object Stream ()
+            //var count = gqry_incidents.next() ? gqry_incidents.getAggregate("COUNT") : 0;
+
+            //var count=gqry_incidents.count;
+
+
+
+
+            return JSON.stringify({
+                ok: true,
+                count: count
+            });
+        } catch (err) {
+
+            gs.error('error occured');
+            return JSON.stringify({
+                ok: false,
+                count: count,
+                error: String(err)
+            });
+        }
+
+
+    },
+
+    type: 'IncidentAjaxUtils_GlideQuery'
+})
+
+
+;
