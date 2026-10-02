@@ -1,0 +1,56 @@
+
+
+// BACKGROUND SCRIPT FOR TESTING
+/*****************************************************************************************************************************************
+x=new IncidentCaller();
+z=x.openCount(null,null);
+console.log(z);
+
+var q=new GlideQuery('incident')
+    .where('active','true')
+	.where('caller_id.name','System Administrator')
+	.selectOne('sys_id','number','caller_id','caller_id.name')
+	.orElse('xyz dragon');
+	
+	
+//console.log(q.sys_id+' ' +q.number+' '+q.caller_id.name);
+console.log(JSON.stringify(q));
+
+console.log('IncidentCallers object x"s  open count excluding current ticket is ' + x.openCount(q.caller_id,q.sys_id));
+*****************************************************************************************************************************************/
+
+
+/*****************************************************************************************************************************************
+SCRIPT INCLUDE (not client callable)
+Given a Caller's Sys_id and Incident Sys_Id, this returns the count of other active incidents with Caller of the Incident's assigned Caller
+****************************************************************************************************************************************/
+
+var IncidentCaller = Class.create();
+IncidentCaller.prototype = {
+
+    initialize: function() {
+        //this.st = new IncidentState();
+
+    },
+
+    openCount: function(callersysid, currentInc) {
+        if (!callersysid) {
+            return 0;
+        }
+
+        var gr = new GlideRecord('incident');
+        gr.addQuery('caller_id', callersysid);
+		gr.addQuery('active',true);
+
+		if (currentInc)
+		{
+			gr.addQuery('sys_id','<>',currentInc);
+		}
+        
+        gr.query();
+		return gr.getRowCount();
+
+    },
+
+    type: 'IncidentCaller'
+};
