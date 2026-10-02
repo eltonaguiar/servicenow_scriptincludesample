@@ -1,3 +1,8 @@
+<img width="1500" height="2000" alt="image (8)" src="https://github.com/user-attachments/assets/bd9769a4-d297-4de1-99b9-1df871c2e554" />
+<img width="1500" height="2000" alt="image (9)" src="https://github.com/user-attachments/assets/01ee8ce5-4f1b-4b8d-a274-b08e321339b5" />
+<img width="1500" height="2000" alt="image (10)" src="https://github.com/user-attachments/assets/b400a029-4af3-461e-b820-692ef44954e5" />
+
+
 These nine cards are a ServiceNow server-script cheat sheet. Here is a table of contents, then a section index you can scan.
 
 ## Table of contents
