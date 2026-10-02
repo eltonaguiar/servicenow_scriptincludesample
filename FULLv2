@@ -1,0 +1,175 @@
+
+//sample output: 
+
+/***************
+Info MessageThe caller System Administrator has (
+# of Incidents:4|numINC0010083|PRIORITY:1| MOD COUNT#: 0|
+|numINC0010082|PRIORITY:1| MOD COUNT#: 0|
+|numINC0010034|PRIORITY:4| MOD COUNT#: 0|
+|numINC0008111|PRIORITY:5| MOD COUNT#: 1|
+) active incidents.
+*************/
+
+
+/*********************START SCRIPT INCLUDE ************************/
+/**Script include: client callable*/
+// THIS WONT WORK IN A CLIENT CALLABLE SCRIPT INCLUDE , since the page wouldnt be refreshed.
+/*
+		if (count>0)
+		gs.addInfoMessage('The caller '+ gruser.name + 'has ' +count );
+*/
+
+var IncidentAjaxUtils_GlideQuery = Class.create();
+IncidentAjaxUtils_GlideQuery.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+    ///DO NOT INITIALIZE IN A CLIENT CALLABLE SCRIPT INCLUDE !
+    /*
+    	initialize:function()
+    	{
+
+    	}	,
+    	*/
+
+    getCallerOpenStats: function() {
+
+        try {
+
+            userid = this.getParameter('sysparm_user_id');
+
+
+            if (!GlideStringUtil.isEligibleSysID(userid)) {
+                return JSON.stringify({
+                    ok: false,
+                    error: 'invalid_user'
+                });
+            }
+
+            var gqryuser = new global.GlideQuery('sys_user')
+                .where('sys_id', userid)
+                .select();
+
+
+            var parts = [];
+			var count="";
+			var i=0;
+
+
+            //            var strResult = "";
+            var myglidequery = new global.GlideQuery('incident')
+                .where('caller_id', userid)
+                .where('active', true)
+
+				i=myglidequery.count();
+               count="# of Incidents:"+i;
+
+                myglidequery.orderBy('priority')
+                .select('number','priority','sys_mod_count')
+                //.aggregate('sum', 'sys_mod_count')
+                //.select()
+				
+                .forEach(function(rec) {
+					
+					count+='|num'+ rec.number +'|PRIORITY:' + rec.priority + '| MOD COUNT#: '+rec.sys_mod_count+'|<br />';
+                    /*
+					parts.push(
+                        '<br />priority:' + rec.group.priority +
+                        ', count:' + rec.count +
+                        ', sum(sys_mod_count):' + rec.sum.sys_mod_count +'\n'
+                    );*/
+
+					/*
+					count+='<strong>priority '+rec.group.priority + '</strong>| # of Incidents at that priority:' +rec.count + '|#mod count for incidents at that priority:' + rec.sum.sys_mod_count +'|' + '<br />';
+					*/
+
+
+
+                });
+
+            //var count = parts.join(';');
+
+
+            return JSON.stringify({
+                ok: true,
+                count: count
+            });
+
+        } catch (err) {
+
+            gs.error('error occured');
+            return JSON.stringify({
+                ok: false,
+                count: count,
+                error: String(err)
+            });
+        }
+
+
+    },
+
+    type: 'IncidentAjaxUtils_GlideQuery'
+})
+
+
+;
+
+
+
+/*********************END SCRIPT INCLUDE ************************/
+
+
+/*********************START CLIENT SCRIPT ************************/
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+
+    var ga = new GlideAjax("IncidentAjaxUtils_GlideQuery");
+
+    ga.addParam("sysparm_name", "getCallerOpenStats");
+    ga.addParam("sysparm_user_id", newValue);
+
+	
+
+    var answer = ga.getXMLAnswer(function(answer) {
+
+        if (!answer) {
+            alert('answer is not provided' + answer + ' - Script Include IncidentAjaxUtils may be disabled are not client callable ');
+            return;
+        }
+
+        var data = JSON.parse(answer);
+        if (!data.ok) {
+            alert('data is not ok, error:' + data.error);
+            return;
+        } else {
+
+            //	alert('should be showing a message');
+
+            try {
+                g_form.clearMessages();
+
+				var cleanCount=data.count ? data.count:0;
+                g_form.addInfoMessage('The caller ' + g_form.getDisplayValue('caller_id') + ' has (<br />' + cleanCount + ') active incidents. '  );
+				
+
+            } catch (err) {
+                alert('error on the g_form message' + String(err));
+            }
+        }
+
+
+
+    });
+
+
+
+
+
+
+
+    //Type appropriate comment here, and begin script below
+
+}
+
+
+/*********************END CLIENT SCRIPT ************************/
