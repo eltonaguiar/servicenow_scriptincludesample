@@ -1,0 +1,145 @@
+/******************
+START CLIENT SCRIPT(onchange)->Incident ==>caller
+**********************/
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+
+    var ga = new GlideAjax("IncidentAjaxUtils_GlideQuery");
+
+    ga.addParam("sysparm_name", "getCallerOpenStats");
+    ga.addParam("sysparm_user_id", newValue);
+
+	
+
+    var answer = ga.getXMLAnswer(function(answer) {
+
+        if (!answer) {
+            alert('answer is not provided' + answer + ' - Script Include IncidentAjaxUtils may be disabled are not client callable ');
+            return;
+        }
+
+        var data = JSON.parse(answer);
+        if (!data.ok) {
+            alert('data is not ok, error:' + data.error);
+            return;
+        } else {
+
+            //	alert('should be showing a message');
+
+            try {
+                g_form.clearMessages();
+                g_form.addInfoMessage('The caller ' + g_form.getDisplayValue('caller_id') + ' has (' + data.count + ') active incidents. '  );
+
+            } catch (err) {
+                alert('error on the g_form message' + String(err));
+            }
+        }
+
+
+
+    });
+
+
+
+
+
+
+
+    //Type appropriate comment here, and begin script below
+
+}
+/******************
+END CLIENT SCRIPT
+**********************/
+
+//Script Include(client callable)
+// THIS WONT WORK IN A CLIENT CALLABLE SCRIPT INCLUDE , since the page wouldnt be refreshed.
+/*
+		if (count>0)
+		gs.addInfoMessage('The caller '+ gruser.name + 'has ' +count );
+*/
+
+var IncidentAjaxUtils_GlideQuery = Class.create();
+IncidentAjaxUtils_GlideQuery.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+    ///DO NOT INITIALIZE IN A CLIENT CALLABLE SCRIPT INCLUDE !
+    /*
+    	initialize:function()
+    	{
+
+    	}	,
+    	*/
+
+    getCallerOpenStats: function() {
+
+        try {
+
+            userid = this.getParameter('sysparm_user_id');
+
+
+            if (!GlideStringUtil.isEligibleSysID(userid)) {
+                return JSON.stringify({
+                    ok: false,
+                    error: 'invalid_user'
+                });
+            }
+
+            var gqryuser = new global.GlideQuery('sys_user')
+                .where('sys_id', userid)
+                .select();
+
+
+            var parts = [];
+
+
+            //            var strResult = "";
+            var myglidequery = new global.GlideQuery('incident')
+                .where('caller_id', userid)
+                .where('active', true)
+                .groupBy('priority')
+                .aggregate('count')
+                .aggregate('sum', 'sys_mod_count')
+                .select()
+                .forEach(function(rec) {
+                    parts.push(
+                        '<br />priority:' + rec.group.priority +
+                        ', count:' + rec.count +
+                        ', sum(sys_mod_count):' + rec.sum.sys_mod_count +'\n'
+                    );
+
+
+
+                    //strResult = strResult+  'priority:' + rec.sys_mod_count.sum + ' ' + rec.priority.count;
+                    //strResult= 'priority is '+rec.group.priority + ' and count is '+rec.count + ' mod count //sum is '+ rec.sum.sys_mod_count  ;
+                });
+
+            var count = parts.join(';');
+
+
+            return JSON.stringify({
+                ok: true,
+                count: count
+            });
+
+        } catch (err) {
+
+            gs.error('error occured');
+            return JSON.stringify({
+                ok: false,
+                count: count,
+                error: String(err)
+            });
+        }
+
+
+    },
+
+    type: 'IncidentAjaxUtils_GlideQuery'
+})
+
+
+;
+
+
