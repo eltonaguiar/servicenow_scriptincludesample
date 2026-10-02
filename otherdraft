@@ -1,0 +1,87 @@
+// THIS WONT WORK IN A CLIENT CALLABLE SCRIPT INCLUDE , since the page wouldnt be refreshed.
+/*
+		if (count>0)
+		gs.addInfoMessage('The caller '+ gruser.name + 'has ' +count );
+*/
+
+var IncidentAjaxUtils_GlideQuery = Class.create();
+IncidentAjaxUtils_GlideQuery.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+    ///DO NOT INITIALIZE IN A CLIENT CALLABLE SCRIPT INCLUDE !
+    /*
+    	initialize:function()
+    	{
+
+    	}	,
+    	*/
+
+    getCallerOpenStats: function() {
+
+        try {
+
+            userid = this.getParameter('sysparm_user_id');
+
+
+            if (!GlideStringUtil.isEligibleSysID(userid)) {
+                return JSON.stringify({
+                    ok: false,
+                    error: 'invalid_user'
+                });
+            }
+
+            var gqryuser = new global.GlideQuery('sys_user')
+                .where('sys_id', userid)
+                .select();
+
+
+            var parts = [];
+			var count="";
+
+
+            //            var strResult = "";
+            var myglidequery = new global.GlideQuery('incident')
+                .where('caller_id', userid)
+                .where('active', true)
+                .groupBy('priority')
+                .aggregate('count')
+                .aggregate('sum', 'sys_mod_count')
+                .select()
+                .forEach(function(rec) {
+                    /*
+					parts.push(
+                        '<br />priority:' + rec.group.priority +
+                        ', count:' + rec.count +
+                        ', sum(sys_mod_count):' + rec.sum.sys_mod_count +'\n'
+                    );*/
+					count+='<strong>priority '+rec.group.priority + '</strong>| # of Incidents at that priority:' +rec.count + '|#mod count for incidents at that priority:' + rec.sum.sys_mod_count +'|' + '<br />';
+
+
+
+                });
+
+            //var count = parts.join(';');
+
+
+            return JSON.stringify({
+                ok: true,
+                count: count
+            });
+
+        } catch (err) {
+
+            gs.error('error occured');
+            return JSON.stringify({
+                ok: false,
+                count: count,
+                error: String(err)
+            });
+        }
+
+
+    },
+
+    type: 'IncidentAjaxUtils_GlideQuery'
+})
+
+
+;
