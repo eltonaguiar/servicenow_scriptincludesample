@@ -1,3 +1,6 @@
+<img width="1408" height="768" alt="&#39;" src="https://github.com/user-attachments/assets/1a61914a-c173-42e4-8db6-dbc018b60ca0" />
+ServiceNow - lesser talked about performance enhancement ? "addExtraField()" (cannot be used in scoped apps) , but can improve performance on dot-walked fields.
+
 ServiceNow infographics / guide for.. 
 - getXMLAnswer, getXML(), and getXMLWait() are client-side ServiceNow methods used with GlideAjax to communicate with the server, differing primarily in execution style and response handling.
 -GlideQuery
