@@ -1,3 +1,14 @@
+ServiceNow infographics / guide for.. 
+- getXMLAnswer, getXML(), and getXMLWait() are client-side ServiceNow methods used with GlideAjax to communicate with the server, differing primarily in execution style and response handling.
+-GlideQuery
+-GlideRecord
+-GlideAggregate
+-GlideAjax
+-GlideDateTime
+-GlideSystem
+-GlideUser
+-RESTMessageV2
+
 <img width="1500" height="2000" alt="image (8)" src="https://github.com/user-attachments/assets/bd9769a4-d297-4de1-99b9-1df871c2e554" />
 <img width="1500" height="2000" alt="image (9)" src="https://github.com/user-attachments/assets/01ee8ce5-4f1b-4b8d-a274-b08e321339b5" />
 <img width="1500" height="2000" alt="image (10)" src="https://github.com/user-attachments/assets/b400a029-4af3-461e-b820-692ef44954e5" />
