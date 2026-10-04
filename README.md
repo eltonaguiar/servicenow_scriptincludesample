@@ -1,4 +1,4 @@
-https://raw.githubusercontent.com/eltonaguiar/servicenow_scriptincludesample/m0vies/glidequery-optional-vs-stream.mp4
+https://raw.githubusercontent.com/eltonaguiar/servicenow_scriptincludesample/m0vies/glidequery-optional-vs-stream.mp4 / https://www.youtube.com/watch?v=rDY9m0tUB8s&feature=youtu.be
   
 
 
