@@ -1,4 +1,5 @@
-<video src="https://github.com/eltonaguiar/servicenow_scriptincludesample/blob/m0vies/glidequery-optional-vs-stream.mp4" controls width="100%">
+
+<video src="https://github.com/user-attachments/assets/your-uuid-here" controls width="100%">
   Your browser does not support the video tag.
 </video>
 
