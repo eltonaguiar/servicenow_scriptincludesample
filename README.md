@@ -1,4 +1,7 @@
-https://github.com/eltonaguiar/servicenow_scriptincludesample/blob/m0vies/glidequery-optional-vs-stream.mp4
+<video src="https://github.com/eltonaguiar/servicenow_scriptincludesample/blob/m0vies/glidequery-optional-vs-stream.mp4" controls width="100%">
+  Your browser does not support the video tag.
+</video>
+
 <img width="1408" height="768" alt="&#39;" src="https://github.com/user-attachments/assets/1a61914a-c173-42e4-8db6-dbc018b60ca0" />
 ServiceNow - lesser talked about performance enhancement ? "addExtraField()" (cannot be used in scoped apps) , but can improve performance on dot-wa<img width="2000" height="971" alt="image" src="https://github.com/user-attachments/assets/4faf9479-6fac-40c6-9697-ae56018d3ed3" />
 <img width="2000" height="805" alt="image (1)" src="https://github.com/user-attachments/assets/4a672444-0caa-4787-ab65-236419e59576" />
