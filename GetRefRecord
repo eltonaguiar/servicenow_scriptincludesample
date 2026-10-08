@@ -1,0 +1,62 @@
+**`get()` returns true or false, not the record.** One argument is a `sys_id`. The row, if found, is left in the same variable.
+
+```javascript
+var user = new GlideRecord('sys_user');
+if (user.get(callerId))
+    gs.info(user.getValue('email'));
+```
+
+**`getUniqueValue()` is called on the record, after a successful `get()` or `next()`.** It returns that row's `sys_id`. Do not chain it off `get()`.
+
+```javascript
+if (user.get(callerId))
+    current.caller_id = user.getUniqueValue();
+```
+
+If you already have `current.caller_id`, that value is the `sys_id`. No lookup needed.
+
+**A dot-walk reads. It does not update the referenced record.**
+
+```javascript
+var phone = current.caller_id.phone;                          // works
+var deptName = current.caller_id.department.getDisplayValue(); // works
+current.caller_id.phone = '416434534';                         // discarded on current.update()
+```
+
+**`getRefRecord()` loads the referenced row so you can update it.** Check `isValidRecord()` first. An empty or deleted reference still returns a `GlideRecord`.
+
+```javascript
+var caller = current.caller_id.getRefRecord();
+if (caller.isValidRecord()) {
+    caller.phone = '416434534';
+    caller.update();
+}
+```
+
+Use a dot-walk for one read. Use `getRefRecord()` to write the other record, or to hold it and read several fields. Each call is a database read.
+
+**Client scripts cannot dot-walk.** `g_form.getValue('caller_id')` is the user `sys_id`. `g_form.getValue('caller_id.department')` does not work.
+
+**`getReference` loads the whole referenced record.** Fine for a few fields that sit directly on that record. Avoid the no-callback form; it blocks the browser. For one field, or for a name behind a second reference like department, use GlideAjax.
+
+**GlideAjax: the processor goes on the prototype, and the method must return a string.**
+
+```javascript
+var IncidentUtils = Class.create();
+IncidentUtils.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+    getCallerDepartment: function() {
+        var callerId = this.getParameter('sysparm_caller_id');
+        if (!callerId)
+            return '';
+
+        var user = new GlideRecord('sys_user');
+        if (!user.get(callerId))
+            return '';
+
+        return user.getDisplayValue('department') || '';
+    },
+    type: 'IncidentUtils'
+});
+```
+
+`getParameter` already returns a string. Do not call it. `sysparm_name` is the function name. Return a plain string for one value; `JSON.stringify` an object only when the client needs several fields, then `JSON.parse` the answer.
